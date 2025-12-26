@@ -37,6 +37,8 @@ Route::middleware(['auth'])->group(function () {
     // Rutas para Administrador, Analista y Supervisor
     Route::middleware(['can:viewAny,' . \App\Models\AuditLog::class])->group(function () {
         Route::get('/audit-logs', [AuditLogController::class, 'index'])->name('audit.logs.index');
+        // Ruta para generar presupuesto consolidado (asumiendo que es en el controlador de proceso)
+        Route::get('/acquisition-processes/{process}/presupuesto-consolidado', [AcquisitionProcessController::class, 'generatePresupuestoConsolidado'])->name('acquisition-processes.presupuesto.consolidado');
     });
 
     // Rutas para Usuarios (Dependencias) - Flujo Principal
@@ -61,7 +63,5 @@ Route::middleware(['auth'])->group(function () {
     // Rutas para Analista y Supervisor (ver solicitudes de todos)
     Route::middleware(['can:viewAny,' . \App\Models\Request::class])->group(function () {
         Route::resource('requests', RequestController::class)->except(['create', 'store']); // Excluir create/store para analista/supervisor
-        // Ruta para generar presupuesto consolidado (asumiendo que es en el controlador de proceso)
-        Route::get('/acquisition-processes/{process}/presupuesto-consolidado', [AcquisitionProcessController::class, 'generatePresupuestoConsolidado'])->name('acquisition-processes.presupuesto.consolidado');
     });
 });

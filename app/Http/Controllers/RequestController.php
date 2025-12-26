@@ -222,4 +222,19 @@ class RequestController extends Controller
         // Por ahora, retornamos una vista de ejemplo
         return view('pdf.presupuesto_individual', compact('request'));
     }
+    /**
+ * Display a listing of the resource.
+ *
+ * @return \Illuminate\Http\Response
+ */
+public function index()
+{
+    $this->authorize('viewAny', Request::class); // Verifica permiso para ver todas las solicitudes
+
+    // Obtener todas las solicitudes con sus relaciones
+    $requests = Request::with(['dependency', 'acquisitionProcess'])->get();
+
+    return view('requests.index', compact('requests'));
+}
+
 }

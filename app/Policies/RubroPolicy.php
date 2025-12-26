@@ -16,9 +16,10 @@ class RubroPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user)
+    public function viewAny(User $user): bool
     {
-        //
+    // El administrador, analista y supervisor pueden ver cualquier rubro
+    return in_array($user->role, ['administrador', 'analista', 'supervisor']);
     }
 
     /**
@@ -39,9 +40,10 @@ class RubroPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function create(User $user)
+    public function create(User $user): bool
     {
-        //
+    // Solo el administrador y el analista pueden crear rubros
+    return in_array($user->role, ['administrador', 'analista']);
     }
 
     /**

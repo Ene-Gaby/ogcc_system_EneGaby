@@ -38,6 +38,7 @@ class AcquisitionProcessPolicy
      */
     public function create(User $user): bool
     {
+        // Solo Admin o Analista pueden crear procesos
         return $user->role === 'administrador' || $user->role === 'analista';
     }
 
