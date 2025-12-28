@@ -1,8 +1,34 @@
+/* Color del Encabezado */
 .navbar {
-    background-color: #003366; /* Ejemplo de color PANTONE */
+    background-color: #0266b3 !important; 
 }
 
-.btn-primary {
-    background-color: #003366; /* Ejemplo de color PANTONE */
-    border-color: #003366; /* Ejemplo de color PANTONE */
+/* Botón "Crear Nuevo Usuario", "Actualizar" y "Editar" */
+.btn-primary, .btn-blue {
+    background-color: #0266b3 !important;
+    border-color: #0266b3 !important;
+    color: white !important;
+}
+
+.btn-primary:hover {
+    background-color: #014d88 !important; /* Un poco más oscuro al pasar el mouse */
+}
+
+/* Botón "Ver" (Azul grisáceo suave) */
+.btn-info {
+    background-color: #5a8cb3 !important;
+    border-color: #5a8cb3 !important;
+    color: white !important;
+}
+
+/* Botón "Eliminar" (Rojo sobrio tipo académico) */
+.btn-danger {
+    background-color: #a31f1f !important;
+    border-color: #a31f1f !important;
+}
+
+/* Botón "Cancelar" */
+.btn-secondary {
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
 }

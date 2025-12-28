@@ -8,7 +8,8 @@ use App\Http\Controllers\{
     RubroController,
     RequestController,
     RequestDetailController,
-    AuditLogController
+    AuditLogController,
+    PasswordController
 };
 
 // Ruta principal post-login
@@ -21,6 +22,9 @@ Auth::routes();
 
 // Agrupar rutas que requieren autenticación
 Route::middleware(['auth'])->group(function () {
+    
+    Route::get('/password/change', [PasswordController::class, 'change'])->name('password.change');
+    Route::post('/password/update', [PasswordController::class, 'update'])->name('password.update');
 
     // Rutas para Administrador
     Route::middleware(['can:viewAny,' . \App\Models\User::class])->group(function () {

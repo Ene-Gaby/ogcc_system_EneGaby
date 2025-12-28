@@ -13,6 +13,8 @@
                 <div class="card-body">
                     <p>Has iniciado sesión correctamente.</p>
                     <p>Tu rol es: <strong>{{ ucfirst(Auth::user()->role) }}</strong></p>
+                    <!-- Imagen de fondo del Rectorado -->
+                    <img src="{{ asset('images/RectoradoULA.png') }}" alt="Rectorado de la Universidad de Los Andes" class="img-fluid">
                     <!-- Opciones basadas en el rol -->
                     @if(Auth::user()->role === 'usuario')
                         <a href="{{ route('requests.open.processes') }}" class="btn btn-primary">Ver Procesos Disponibles</a>
