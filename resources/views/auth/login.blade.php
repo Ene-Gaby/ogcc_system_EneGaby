@@ -3,11 +3,12 @@
 @section('title', 'Iniciar Sesión')
 
 @section('content')
-<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh; background: linear-gradient(135deg, #003366, #004080);">
-    <div class="row w-100">
-        <div class="col-md-8 col-lg-6 mx-auto">
-            <div class="card shadow-lg border-0 rounded-4 overflow-hidden" style="background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);">
-                <div class="row g-0">
+<div class="d-flex justify-content-center align-items-center" style="min-height: 92vh; background: linear-gradient(135deg, #003366, #004080); width: 100%; margin: 0; padding: 0;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10 col-lg-8">
+                <div class="card shadow-lg border-0 rounded-4 overflow-hidden" ...>
+                    <div class="row g-0">
                     <!-- Imagen de la ULA -->
                     <div class="col-md-5 d-none d-md-block">
                         <img src="{{ asset('images/Edif_Administrativo_ULA.jpg') }}" class="img-fluid h-100" alt="Edificio Universidad de Los Andes" style="object-fit: cover;">

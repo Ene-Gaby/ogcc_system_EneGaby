@@ -11980,3 +11980,161 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+
+
+/* ===== ESTILOS DEL SIDEBAR ===== */
+.sidebar-nav-link {
+    transition: all 0.3s ease;
+    border-radius: 12px !important;
+    margin-bottom: 10px;
+    border: 1px solid transparent;
+}
+
+.sidebar-nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    transform: translateX(8px);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.sidebar-nav-link.active {
+    background-color: rgba(255, 255, 255, 0.25) !important;
+    border-left: 4px solid #ffd700;
+    font-weight: 600;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-nav-link.active i {
+    color: #ffd700;
+}
+
+.sidebar-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    margin: 25px 0;
+}
+
+.sidebar-section-title {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 20px 0 10px 15px;
+}
+
+/* Para el título "Panel" */
+.panel-title {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border-left: 4px solid #ffd700;
+}
+
+/* Fondo con gradiente para el sidebar */
+.bg-primary {
+    background: linear-gradient(180deg, #0266b3 0%, #014d88 100%) !important;
+}
+
+/* ===== PALETA DE COLORES INSTITUCIONAL ULA ===== */
+
+/* Color base ULA */
+:root {
+    --ula-blue: #0266b3;
+    --ula-blue-dark: #014d88;
+    --ula-blue-light: #5a8cb3;
+    --ula-red: #a31f1f;
+    --ula-red-dark: #8a1a1a;
+    --ula-green: #28a745;
+}
+
+/* ===== BOTONES PRINCIPALES (CREAR) ===== */
+
+/* Botón CREAR NUEVO USUARIO, DEPENDENCIA, PROCESO, RUBRO */
+.btn-primary, .btn-create, .btn-success {
+    background-color: #0266b3 !important;
+    border-color: #0266b3 !important;
+    color: white !important;
+    font-weight: 600;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover, .btn-create:hover, .btn-success:hover {
+    background-color: #014d88 !important;
+    border-color: #014d88 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(2, 102, 179, 0.2);
+}
+
+/* ===== BOTONES DE ACCIONES EN TABLAS ===== */
+
+/* Botón VER */
+.btn-info {
+    background-color: #0266b3 !important;
+    border-color: #0266b3 !important;
+    color: white !important;
+}
+
+.btn-info:hover {
+    background-color: #015a9e !important;
+    border-color: #015a9e !important;
+}
+
+/* Botón EDITAR */
+.btn-warning {
+    background-color: #5a8cb3 !important;
+    border-color: #5a8cb3 !important;
+    color: white !important;
+}
+
+.btn-warning:hover {
+    background-color: #4a7ca3 !important;
+    border-color: #4a7ca3 !important;
+}
+
+/* Botón ELIMINAR */
+.btn-danger {
+    background-color: #a31f1f !important;
+    border-color: #a31f1f !important;
+    color: white !important;
+}
+
+.btn-danger:hover {
+    background-color: #8a1a1a !important;
+    border-color: #8a1a1a !important;
+}
+
+/* ===== ESTILOS ESPECÍFICOS PARA BOTONES ===== */
+
+/* Tamaños */
+.btn-sm {
+    padding: 0.25rem 0.75rem !important;
+    font-size: 0.875rem !important;
+}
+
+.btn-lg {
+    padding: 0.5rem 1.5rem !important;
+    font-size: 1.1rem !important;
+}
+
+/* Iconos dentro de botones */
+.btn i {
+    margin-right: 6px;
+}
+
+/* Espaciado entre botones en tablas */
+.table .btn {
+    margin: 2px;
+    min-width: 70px;
+}
+
+/* Botones con gradiente ULA */
+.btn-gradient {
+    background: linear-gradient(135deg, #0266b3 0%, #0284d8 100%) !important;
+    border: none !important;
+    color: white !important;
+}
+
+.btn-gradient:hover {
+    background: linear-gradient(135deg, #015a9e 0%, #0270b8 100%) !important;
+}

@@ -10,24 +10,17 @@
                 <div class="card-header">
                     <h2>Bienvenido, {{ Auth::user()->name }}</h2>
                 </div>
-                <div class="card-body">
+                <div class="card-body text-center">
                     <p>Has iniciado sesión correctamente.</p>
                     <p>Tu rol es: <strong>{{ ucfirst(Auth::user()->role) }}</strong></p>
-                    <!-- Imagen de fondo del Rectorado -->
-                    <img src="{{ asset('images/RectoradoULA.png') }}" alt="Rectorado de la Universidad de Los Andes" class="img-fluid">
-                    <!-- Opciones basadas en el rol -->
-                    @if(Auth::user()->role === 'usuario')
-                        <a href="{{ route('requests.open.processes') }}" class="btn btn-primary">Ver Procesos Disponibles</a>
-                        <a href="{{ route('requests.my.index') }}" class="btn btn-info">Mis Solicitudes</a>
-                    @elseif(in_array(Auth::user()->role, ['analista', 'supervisor']))
-                        <a href="{{ route('requests.index') }}" class="btn btn-primary">Ver Todas las Solicitudes</a>
-                        <a href="{{ route('acquisition-processes.index') }}" class="btn btn-info">Gestionar Procesos</a>
-                    @elseif(Auth::user()->role === 'administrador')
-                        <a href="{{ route('users.index') }}" class="btn btn-primary">Gestionar Usuarios</a>
-                        <a href="{{ route('dependencies.index') }}" class="btn btn-info">Gestionar Dependencias</a>
-                        <a href="{{ route('acquisition-processes.index') }}" class="btn btn-success">Gestionar Procesos</a>
-                        <a href="{{ route('rubros.index') }}" class="btn btn-warning">Gestionar Rubros</a>
-                    @endif
+                    
+                    <img src="{{ asset('images/RectoradoULA.png') }}" alt="Rectorado de la Universidad de Los Andes" class="img-fluid mb-4 rounded shadow-sm">
+                    
+                    <div class="d-flex justify-content-center">
+                        <a href="#" class="btn btn-secondary shadow-sm" target="_blank">
+                            <i class="fas fa-book me-2"></i> Manual de Usuario
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
