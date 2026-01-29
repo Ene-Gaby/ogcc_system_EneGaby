@@ -18,6 +18,11 @@ class AcquisitionProcess extends Model
         'status',
     ];
 
+    protected $casts = [
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
+    ];
+
     // Relación: Un Proceso de Contratación tiene muchas Solicitudes
     public function requests()
     {

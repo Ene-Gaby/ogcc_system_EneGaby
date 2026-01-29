@@ -41,6 +41,7 @@ Route::middleware(['auth'])->group(function () {
     // Rutas para Administrador, Analista y Supervisor
     Route::middleware(['can:viewAny,' . \App\Models\AuditLog::class])->group(function () {
         Route::get('/audit-logs', [AuditLogController::class, 'index'])->name('audit.logs.index');
+        Route::get('/audit-logs/pdf', [AuditLogController::class, 'generatePdf'])->name('audit.logs.pdf');
         // Ruta para generar presupuesto consolidado (asumiendo que es en el controlador de proceso)
         Route::get('/acquisition-processes/{process}/presupuesto-consolidado', [AcquisitionProcessController::class, 'generatePresupuestoConsolidado'])->name('acquisition-processes.presupuesto.consolidado');
     });

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Request;
 use App\Models\RequestDetail;
 use App\Models\AcquisitionProcess;
@@ -16,16 +17,29 @@ class RequestController extends Controller
     // Mostrar procesos abiertos disponibles para la dependencia del usuario actual
     public function listOpenProcesses()
     {
-        $this->authorize('viewAny', AcquisitionProcess::class); // Verifica permiso general para ver procesos
+        $this->authorize('viewAny', AcquisitionProcess::class);
 
-        $userDependencyId = Auth::user()->dependency->id; // Asumiendo que un usuario 'usuario' tiene una dependencia asociada
+    // Obtener la dependencia del usuario actual
+    $userDependency = Auth::user()->dependency;
 
-        // Obtener procesos abiertos donde la dependencia NO haya creado ya una solicitud
-        $openProcesses = AcquisitionProcess::where('status', 'open')
-            ->whereDoesntHave('requests', function ($query) use ($userDependencyId) {
-                $query->where('dependency_id', $userDependencyId);
-            })
-            ->get();
+    if (!$userDependency) {
+        return redirect()->route('home')->with('error', 'No se puede continuar porque no tienes una dependencia asociada.');
+    }
+
+    $userDependencyId = $userDependency->id;
+
+    // Log para depuración
+    \Log::info("Usuario: " . Auth::user()->name . ", Dependencia ID: " . $userDependencyId);
+
+    // Obtener procesos abiertos donde la dependencia NO haya creado ya una solicitud
+        $openProcesses = AcquisitionProcess::whereIn('status', ['open', 'Open'])
+        ->whereDoesntHave('requests', function ($query) use ($userDependencyId) {
+            $query->where('dependency_id', $userDependencyId);
+        })
+        ->get();
+
+    // Log para depuración
+    \Log::info("Procesos disponibles: " . $openProcesses->count());
 
         return view('requests.list_open_processes', compact('openProcesses'));
     }
@@ -187,40 +201,52 @@ class RequestController extends Controller
     // Mostrar lista de solicitudes propias
     public function myRequests()
     {
-        $userDependencyId = Auth::user()->dependency->id;
-        $requests = Request::where('dependency_id', $userDependencyId)->get();
+    // 1. Verificar que el usuario esté autenticado (ya lo hace el middleware 'auth')
+    // 2. Obtener la dependencia del usuario actual
+    $userDependency = Auth::user()->dependency;
 
-        return view('requests.my_requests', compact('requests'));
+    // 3. Verificar si el usuario tiene una dependencia asociada
+    if (!$userDependency) {
+        // Si no tiene dependencia, redirigir con un mensaje de error
+        return redirect()->route('home')->with('error', 'No se puede continuar porque no tienes una dependencia asociada.');
+    }
+
+    // 4. Obtener el ID de la dependencia del usuario
+    $userDependencyId = $userDependency->id;
+
+    // 5. Obtener las solicitudes del usuario actual (basadas en la dependencia)
+    $requests = Request::where('dependency_id', $userDependencyId)->get();
+
+    // 6. Retornar la vista con las solicitudes del usuario
+    return view('requests.my_requests', compact('requests'));
     }
 
     // Generar comprobante de participación/no participación en PDF
     public function generateComprobante(Request $request)
     {
-        $this->authorize('view', $request); // Verifica permiso para ver esta solicitud específica
+        $this->authorize('view', $request);
 
-        // Lógica para generar PDF usando dompdf
-        // $pdf = Pdf::loadView('pdf.comprobante', ['request' => $request]);
-        // return $pdf->download('comprobante_'.$request->id.'.pdf');
-
-        // Por ahora, retornamos una vista de ejemplo
-        return view('pdf.comprobante', compact('request'));
+    // Generamos el PDF usando la vista 'pdf.comprobante'
+    $pdf = Pdf::loadView('pdf.comprobante', ['request' => $request]);
+    
+    // Retornamos la descarga del archivo
+    return $pdf->download('comprobante_solicitud_' . $request->id . '.pdf');
     }
 
     // Generar presupuesto individual en PDF
     public function generatePresupuestoIndividual(Request $request)
     {
-        $this->authorize('view', $request); // Verifica permiso para ver esta solicitud específica
+        $this->authorize('view', $request);
 
-        if (!$request->participates) {
-            abort(403, 'No se puede generar presupuesto individual para una solicitud que no participa.');
-        }
+    if (!$request->participates) {
+        abort(403, 'No se puede generar presupuesto individual para una solicitud que no participa.');
+    }
 
-        // Lógica para generar PDF usando dompdf
-        // $pdf = Pdf::loadView('pdf.presupuesto_individual', ['request' => $request]);
-        // return $pdf->download('presupuesto_individual_'.$request->id.'.pdf');
-
-        // Por ahora, retornamos una vista de ejemplo
-        return view('pdf.presupuesto_individual', compact('request'));
+    // Generamos el PDF usando la vista 'pdf.presupuesto_individual'
+    $pdf = Pdf::loadView('pdf.presupuesto_individual', ['request' => $request]);
+    
+    // Retornamos la descarga del archivo
+    return $pdf->download('presupuesto_individual_solicitud_' . $request->id . '.pdf');
     }
     /**
  * Display a listing of the resource.

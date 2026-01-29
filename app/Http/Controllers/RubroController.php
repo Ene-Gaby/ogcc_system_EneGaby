@@ -38,19 +38,20 @@ class RubroController extends Controller
      */
     public function store(Request $request)
     {
-        $this->authorize('create', Rubro::class);
-        $validated = $request->validate([
-            'description' => 'required|string|max:255',
-            'presentation' => 'required|string|max:255',
-            'unit_price' => 'required|numeric|min:0',
-            'iva_exempt' => 'required|boolean',
-            'onapre_code' => 'required|string|digits:10|unique:rubros,onapre_code',
-            'onu_code' => 'required|string|digits:8|unique:rubros,onu_code',
-        ]);
+    $this->authorize('create', Rubro::class);
 
-        $rubro = Rubro::create($validated);
+    $validatedData = $request->validate([
+        'description' => 'required|string|max:255',
+        'presentation' => 'required|string|max:255',
+        'unit_price' => 'required|numeric|min:0',
+        'iva_exempt' => 'required|boolean',
+        'onapre_code' => 'required|string|digits:10|unique:rubros,onapre_code', // RN-01
+        'onu_code' => 'required|string|digits:8|unique:rubros,onu_code', // RN-02
+    ]);
 
-        return redirect()->route('rubros.index')->with('success', 'Rubro creado exitosamente.');
+    $rubro = Rubro::create($validatedData);
+
+    return redirect()->route('rubros.index')->with('success', 'Rubro creado exitosamente.');
     }
 
     /**
@@ -86,19 +87,20 @@ class RubroController extends Controller
      */
     public function update(Request $request, Rubro $rubro)
     {
-        $this->authorize('update', $rubro);
-        $validated = $request->validate([
-            'description' => 'required|string|max:255',
-            'presentation' => 'required|string|max:255',
-            'unit_price' => 'required|numeric|min:0',
-            'iva_exempt' => 'required|boolean',
-            'onapre_code' => 'required|string|digits:10|unique:rubros,onapre_code,' . $rubro->id,
-            'onu_code' => 'required|string|digits:8|unique:rubros,onu_code,' . $rubro->id,
-        ]);
+    $this->authorize('update', $rubro);
 
-        $rubro->update($validated);
+    $validatedData = $request->validate([
+        'description' => 'required|string|max:255',
+        'presentation' => 'required|string|max:255',
+        'unit_price' => 'required|numeric|min:0',
+        'iva_exempt' => 'required|boolean',
+        'onapre_code' => 'required|string|digits:10|unique:rubros,onapre_code,' . $rubro->id, // RN-01
+        'onu_code' => 'required|string|digits:8|unique:rubros,onu_code,' . $rubro->id, // RN-02
+    ]);
 
-        return redirect()->route('rubros.index')->with('success', 'Rubro actualizado exitosamente.');
+    $rubro->update($validatedData);
+
+    return redirect()->route('rubros.index')->with('success', 'Rubro actualizado exitosamente.');
     }
 
     /**

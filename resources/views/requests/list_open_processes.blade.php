@@ -1,32 +1,37 @@
 @extends('layouts.app')
 
-@section('title', 'Procesos Abiertos')
+@section('title', 'Procesos Disponibles')
 
 @section('content')
     <div class="container">
-        <h1 class="mb-4">Procesos de Contratación Abiertos</h1>
-        @if($openProcesses->count() > 0)
-            <div class="row">
-                @foreach($openProcesses as $process)
-                    <div class="col-md-6 mb-4">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ $process->name }}</h5>
-                                <p class="card-text"><strong>Año Fiscal:</strong> {{ $process->fiscal_year }}</p>
-                                <p class="card-text"><strong>Descripción:</strong> {{ Str::limit($process->description, 150) }}</p>
-                                <p class="card-text"><small class="text-muted">Fechas: {{ $process->start_date->format('d/m/Y') }} - {{ $process->end_date->format('d/m/Y') }}</small></p>
-                            </div>
-                            <div class="card-footer">
-                                <a href="{{ route('requests.create.for.process', $process->id) }}" class="btn btn-primary btn-block">Solicitar Rubros</a>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        @else
-            <div class="alert alert-info">
-                <p>No hay procesos de contratación abiertos disponibles en este momento.</p>
-            </div>
-        @endif
+        <h1>Procesos Disponibles</h1>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Año Fiscal</th>
+                    <th>Estado</th>
+                    <th>Fechas</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($openProcesses as $process)
+                    <tr>
+                        <td>{{ $process->name }}</td>
+                        <td>{{ $process->fiscal_year }}</td>
+                        <td><span class="badge badge-success">{{ ucfirst($process->status) }}</span></td>
+                        <td>{{ $process->start_date->format('d/m/Y') }} - {{ $process->end_date->format('d/m/Y') }}</td>
+                        <td>
+                            <a href="{{ route('requests.create.for.process', $process->id) }}" class="btn btn-primary">Crear Solicitud</a>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" class="text-center">No hay procesos disponibles en este momento.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
 @endsection

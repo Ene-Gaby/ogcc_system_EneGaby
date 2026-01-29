@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AcquisitionProcess;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class AcquisitionProcessController extends Controller
 {
@@ -124,13 +125,12 @@ class AcquisitionProcessController extends Controller
     // Método para generar presupuesto consolidado (Paso 6.2 o 7)
     public function generatePresupuestoConsolidado(AcquisitionProcess $process)
     {
-        $this->authorize('view', $process); // Asumiendo que ver el proceso permite ver el consolidado
+        $this->authorize('view', $process); // Asegura que el usuario puede ver el proceso
 
-        // Lógica para generar PDF usando dompdf
-        // $pdf = Pdf::loadView('pdf.presupuesto_consolidado', ['process' => $process]);
-        // return $pdf->download('presupuesto_consolidado_'.$process->id.'.pdf');
+        // Generamos el PDF usando la vista 'pdf.presupuesto_consolidado'
+        $pdf = Pdf::loadView('pdf.presupuesto_consolidado', ['process' => $process]);
 
-        // Por ahora, retornamos una vista de ejemplo
-        return view('pdf.presupuesto_consolidado', compact('process'));
+        // Retornamos el archivo para que el navegador lo descargue
+        return $pdf->download('presupuesto_consolidado_' . $process->id . '.pdf');
     }
 }

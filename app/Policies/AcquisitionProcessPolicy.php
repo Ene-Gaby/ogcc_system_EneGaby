@@ -25,12 +25,11 @@ class AcquisitionProcessPolicy
      */
     public function view(User $user, AcquisitionProcess $acquisitionProcess): bool
     {
-        // Admin, Analista y Supervisor pueden ver cualquier proceso
         if (in_array($user->role, ['administrador', 'analista', 'supervisor'])) {
             return true;
-        }
-        // El usuario puede ver un proceso si está abierto
-        return $user->role === 'usuario' && $acquisitionProcess->status === 'open';
+    }
+        // Permitir ver si el rol es usuario y el proceso está activo (independiente de mayúsculas)
+        return $user->role === 'usuario' && strtolower($acquisitionProcess->status) === 'open';
     }
 
     /**

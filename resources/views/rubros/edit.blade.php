@@ -31,10 +31,10 @@
                 <label for="onapre_code" class="form-label">Código ONAPRE (10 dígitos)</label>
                 <input type="text" name="onapre_code" id="onapre_code" class="form-control" value="{{ old('onapre_code', $rubro->onapre_code) }}" required pattern="\d{10}" maxlength="10">
             </div>
-            <div class="mb-3">
-                <label for="onu_code" class="form-label">Código ONU (8 dígitos)</label>
-                <input type="text" name="onu_code" id="onu_code" class="form-control" value="{{ old('onu_code', $rubro->onu_code) }}" required pattern="\d{8}" maxlength="8">
-            </div>
+           <div class="mb-3">
+               <label for="onu_code" class="form-label">Código ONU (8 dígitos)</label>
+               <input type="text" name="onu_code" id="onu_code" class="form-control" value="{{ old('onu_code', $rubro->onu_code) }}" required pattern="\d{8}" maxlength="8">
+           </div>
             <button type="submit" class="btn btn-primary">Actualizar</button>
             <a href="{{ route('rubros.index') }}" class="btn btn-secondary">Cancelar</a>
         </form>
