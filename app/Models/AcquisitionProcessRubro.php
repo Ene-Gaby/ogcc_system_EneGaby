@@ -9,6 +9,8 @@ class AcquisitionProcessRubro extends Model
 {
     use HasFactory;
 
+    protected $table = 'acquisition_process_rubro';
+
     protected $fillable = [
         'acquisition_process_id',
         'rubro_id',

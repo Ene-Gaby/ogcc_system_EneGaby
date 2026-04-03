@@ -69,6 +69,16 @@
                                 <i class="fas fa-file-invoice-dollar"></i> Presupuesto
                             </a>
                             
+                            <!-- Participantes -->
+                            <a href="{{ route('process.report.participantes', $process->id) }}" class="btn btn-sm btn-info" target="_blank">
+                                <i class="fas fa-users"></i> Participantes
+                            </a>
+
+                            <!-- No Participantes -->
+                            <a href="{{ route('process.report.no-participantes', $process->id) }}" class="btn btn-sm btn-warning" target="_blank">
+                                <i class="fas fa-user-slash"></i> No Participantes
+                            </a>
+
                             <!-- Formulario oculto para eliminar -->
                             <form id="delete-process-form-{{ $process->id }}" 
                                   action="{{ route('acquisition-processes.destroy', $process->id) }}" 

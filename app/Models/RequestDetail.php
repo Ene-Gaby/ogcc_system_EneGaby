@@ -1,63 +1,57 @@
 <?php
-
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class RequestDetail extends Model
 {
-    use HasFactory;
-
+    protected $table = 'request_details';
+    
     protected $fillable = [
         'request_id',
         'acquisition_process_rubro_id',
         'quantity',
         'unit_price_at_request_time',
         'iva_exempt_at_request_time',
-        'iva_amount_calculated',
-        'subtotal_calculated',
-        'total_calculated',
+        'subtotal',
+        'iva_amount',
+        'total',
     ];
-
-    // Relación: Un Detalle pertenece a una Solicitud
+    
+    protected $casts = [
+        'quantity' => 'integer',
+        'unit_price_at_request_time' => 'decimal:2',
+        'subtotal' => 'decimal:2',
+        'iva_amount' => 'decimal:2',
+        'total' => 'decimal:2',
+        'iva_exempt_at_request_time' => 'boolean',
+    ];
+    
     public function request()
     {
         return $this->belongsTo(Request::class);
     }
-
-    // Relación: Un Detalle pertenece a un Rubro específico de un Proceso
+    
     public function acquisitionProcessRubro()
     {
-        return $this->belongsTo(AcquisitionProcessRubro::class);
+        return $this->belongsTo(AcquisitionProcessRubro::class, 'acquisition_process_rubro_id');
     }
-
-    // Método para calcular subtotal
-    public function calculateSubtotal()
-    {
-        return $this->quantity * $this->unit_price_at_request_time;
-    }
-
-    // Método para calcular IVA
-    public function calculateIva()
-    {
-        if ($this->iva_exempt_at_request_time) {
-            return 0;
-        }
-        return $this->calculateSubtotal() * (config('app.iva_rate', 0.16)); // Usamos una configuración global para el IVA
-    }
-
-    // Método para calcular total
-    public function calculateTotal()
-    {
-        return $this->calculateSubtotal() + $this->calculateIva();
-    }
-
-    // Método para calcular y actualizar todos los campos calculados
+    
+    /**
+     * Recalcula los valores del detalle basado en cantidad y precio
+     * 
+     * @return $this
+     */
     public function recalculate()
     {
-        $this->subtotal_calculated = $this->calculateSubtotal();
-        $this->iva_amount_calculated = $this->calculateIva();
-        $this->total_calculated = $this->calculateTotal();
+        $subtotal = $this->quantity * $this->unit_price_at_request_time;
+        $iva = $this->iva_exempt_at_request_time ? 0 : ($subtotal * 0.16);
+        $total = $subtotal + $iva;
+        
+        $this->subtotal = $subtotal;
+        $this->iva_amount = $iva;
+        $this->total = $total;
+        
+        return $this;
     }
 }

@@ -10,8 +10,8 @@ class AuditLog extends Model
     use HasFactory;
 
     protected $fillable = [
-        'auditable_id',
         'auditable_type',
+        'auditable_id',
         'user_id',
         'action',
         'old_values',
@@ -19,13 +19,17 @@ class AuditLog extends Model
         'action_time',
     ];
 
-    // Relación: Un Registro de Auditoría pertenece a un Usuario
+    protected $casts = [
+        'old_values' => 'array',
+        'new_values' => 'array',
+        'action_time' => 'datetime',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // Relación: Un Registro de Auditoría puede ser de cualquier modelo (polimórfica)
     public function auditable()
     {
         return $this->morphTo();

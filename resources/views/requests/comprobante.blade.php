@@ -63,8 +63,6 @@
             border-top: 1px solid #ddd;
             padding-top: 10px;
         }
-        /* Solo mostrar marca de agua si NO es final */
-        @if(!isset($is_final) || !$is_final)
         .watermark {
             position: fixed;
             top: 50%;
@@ -74,7 +72,10 @@
             color: rgba(0,0,0,0.1);
             z-index: 1000;
         }
-        @endif
+        .qr-code {
+            text-align: center;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -94,17 +95,21 @@
             <p>ha registrado formalmente su participación en el proceso de compra:</p>
             <h3>{{ $request->acquisitionProcess->name }}</h3>
             <p><strong>Año Fiscal:</strong> {{ $request->acquisitionProcess->fiscal_year }}</p>
-            <p><strong>Fecha de Registro:</strong> {{ $today ?? now()->format('d/m/Y') }}</p>
+            <p><strong>Fecha de Registro:</strong> {{ $today ?? now()->format('d/m/Y H:i:s') }}</p>
         </div>
         
         <div class="details">
-            <h4>Información de la Solicitud</h4>
+            <h4>Resumen de la Solicitud</h4>
             <table>
                 <tr>
-                    <td width="40%"><strong>N° de Solicitud:</strong></td>
+                    <td><strong>N° de Solicitud:</strong></td>
                     <td>{{ str_pad($request->id, 8, '0', STR_PAD_LEFT) }}</td>
-                    <td width="30%"><strong>Monto Total:</strong></td>
+                    <td><strong>Monto Total:</strong></td>
                     <td><strong>{{ number_format($request->total_amount, 2, ',', '.') }} Bs.</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>Rubros Solicitados:</strong></td>
+                    <td colspan="3">{{ $request->requestDetails->count() }} rubro(s)</td>
                 </tr>
                 <tr>
                     <td><strong>Estado:</strong></td>
@@ -113,8 +118,6 @@
                             <span style="color: green;">✓ Confirmado y Enviado</span>
                         @elseif($request->status == 'draft')
                             <span style="color: orange;">● En Edición</span>
-                        @elseif($request->status == 'not_participating')
-                            <span style="color: #6c757d;">✗ No Participa</span>
                         @endif
                     </td>
                 </tr>
@@ -124,7 +127,7 @@
         <div class="signature">
             <p>_________________________________</p>
             <p>Firma y Sello de la Dependencia</p>
-            <p style="margin-top: 20px;">_________________________________</p>
+            <p style="margin-top: 10px;">_________________________________</p>
             <p>Autorización del Sistema OGCC</p>
         </div>
     </div>

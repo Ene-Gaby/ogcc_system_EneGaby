@@ -3,119 +3,107 @@
 @section('title', 'Mis Solicitudes')
 
 @section('content')
-    <div class="container">
-        <h1 class="mb-4">Mis Solicitudes</h1>
+<div class="container">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Mis Solicitudes</h3>
+        </div>
         
-        <table class="table table-striped table-hover">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Proceso de Contratación</th>
-                    <th>Estado</th>
-                    <th>Participa</th>
-                    <th>Total</th>
-                    <th>Fecha</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($requests as $request)
-                    <tr>
-                        <td>{{ $request->acquisitionProcess->name }}</td>
-                        <td>
-                            <span class="badge badge-{{ $request->status === 'submitted' ? 'success' : ($request->status === 'not_participating' ? 'danger' : 'warning') }}">
-                                {{ ucfirst($request->status) }}
-                            </span>
-                        </td>
-                        <td>{{ $request->participates ? 'Sí' : 'No' }}</td>
-                        <td>{{ number_format($request->total_amount, 2, ',', '.') }}</td>
-                        <td>{{ $request->created_at->format('d/m/Y') }}</td>
-                        <td>
-                            @if(in_array($request->status, ['draft', 'pending_decision']))
-                                <a href="{{ route('requests.edit.details', $request->id) }}" class="btn btn-primary btn-sm">Editar</a>
-                                
-                                <form action="{{ route('requests.destroy', $request->id) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Está seguro de que desea eliminar esta solicitud?')">Eliminar</button>
-                                </form>
-
-                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#confirmParticipateModal{{ $request->id }}">
-                                    Participar
-                                </button>
-                                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirmNotParticipateModal{{ $request->id }}">
-                                    No Participar
-                                </button>
-                            @endif
-
-                            @if($request->status === 'submitted' && $request->participates)
-                                <a href="{{ route('requests.presupuesto.individual', $request->id) }}" class="btn btn-info btn-sm" target="_blank">Presupuesto</a>
-                            @endif
-
-                            @if($request->status === 'submitted' || $request->status === 'not_participating')
-                                <a href="{{ route('requests.comprobante', $request->id) }}" class="btn btn-secondary btn-sm" target="_blank">Comprobante</a>
-                            @endif
-                        </td>
-                    </tr>
-
-                    @include('requests.partials.modals_participation', ['request' => $request]) 
-                    {{-- Nota: Si no usas un partial, aquí abajo siguen los modales que tenías --}}
-                    
-                    <div class="modal fade" id="confirmParticipateModal{{ $request->id }}" tabindex="-1" role="dialog" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Confirmar Participación</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <form action="{{ route('requests.confirm.participation', $request->id) }}" method="POST">
-                                    @csrf
-                                    <div class="modal-body">
-                                        <p>¿Está seguro de participar en <strong>{{ $request->acquisitionProcess->name }}</strong>?</p>
-                                        <label>Número de Oficio (RN-06):</label>
-                                        <input type="text" name="official_letter_number" class="form-control" required>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                        <button type="submit" class="btn btn-success">Confirmar</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="modal fade" id="confirmNotParticipateModal{{ $request->id }}" tabindex="-1" role="dialog" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Confirmar No Participación</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <form action="{{ route('requests.confirm.non.participation', $request->id) }}" method="POST">
-                                    @csrf
-                                    <div class="modal-body">
-                                        <p>¿Está seguro de NO participar en <strong>{{ $request->acquisitionProcess->name }}</strong>?</p>
-                                        <label>Número de Oficio (RN-06):</label>
-                                        <input type="text" name="official_letter_number" class="form-control" required>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                        <button type="submit" class="btn btn-danger">Confirmar No Participación</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-
-                @empty
-                    <tr>
-                        <td colspan="6" class="text-center">No has creado ninguna solicitud aún.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+        <div class="card-body">
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle"></i> {{ session('success') }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            @endif
+            
+            @if($requests->count() > 0)
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Proceso</th>
+                                <th>Año Fiscal</th>
+                                <th>Fecha Solicitud</th>
+                                <th>Total (Bs.)</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($requests as $solicitud)
+                                <tr>
+                                    <td class="text-center">{{ str_pad($solicitud->id, 8, '0', STR_PAD_LEFT) }}</td>
+                                    <td>{{ $solicitud->acquisitionProcess->name ?? 'N/A' }}</td>
+                                    <td class="text-center">{{ $solicitud->acquisitionProcess->fiscal_year ?? 'N/A' }}</td>
+                                    <td class="text-center">{{ \Carbon\Carbon::parse($solicitud->created_at)->format('d/m/Y H:i') }}</td>
+                                    <td class="text-right">{{ number_format($solicitud->total_amount, 2, ',', '.') }}</td>
+                                    <td class="text-center">
+                                        @if($solicitud->status == 'submitted')
+                                            <span class="badge bg-success text-white px-3 py-2" style="background-color: #28a745; color: #ffffff;">
+                                                <i class="fas fa-check-circle"></i> Enviada
+                                            </span>
+                                        @elseif($solicitud->status == 'draft')
+                                            <span class="badge bg-warning text-dark px-3 py-2" style="background-color: #ffc107; color: #212529;">
+                                                <i class="fas fa-edit"></i> Borrador
+                                            </span>
+                                        @elseif($solicitud->status == 'not_participating')
+                                            <span class="badge bg-secondary text-white px-3 py-2" style="background-color: #6c757d; color: #ffffff;">
+                                                <i class="fas fa-times-circle"></i> No Participa
+                                            </span>
+                                        @else
+                                            <span class="badge bg-info text-white px-3 py-2">
+                                                {{ ucfirst($solicitud->status) }}
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td class="text-center">
+                                        @if($solicitud->status == 'submitted')
+                                            <div class="btn-group" role="group">
+                                                <a href="{{ route('requests.presupuesto.definitivo', $solicitud->id) }}" 
+                                                   class="btn btn-sm btn-info" 
+                                                   target="_blank"
+                                                   title="Descargar Presupuesto">
+                                                    <i class="fas fa-file-pdf"></i> Presupuesto
+                                                </a>
+                                                <a href="{{ route('requests.comprobante.definitivo', $solicitud->id) }}" 
+                                                   class="btn btn-sm btn-success" 
+                                                   target="_blank"
+                                                   title="Descargar Comprobante">
+                                                    <i class="fas fa-file-pdf"></i> Comprobante
+                                                </a>
+                                            </div>
+                                        @elseif($solicitud->status == 'draft')
+                                            <a href="{{ route('requests.preview', $solicitud->id) }}" 
+                                               class="btn btn-sm btn-primary">
+                                                <i class="fas fa-edit"></i> Continuar Edición
+                                            </a>
+                                        @elseif($solicitud->status == 'not_participating')
+                                            <a href="{{ route('requests.comprobante.no.participacion', $solicitud->id) }}" 
+                                                class="btn btn-sm btn-secondary" 
+                                                target="_blank">
+                                                <i class="fas fa-file-pdf"></i> Ver Comprobante
+                                            </a>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle fa-2x mb-2"></i>
+                    <p>No tiene solicitudes registradas.</p>
+                    <a href="{{ route('requests.open.processes') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Ver Procesos Disponibles
+                    </a>
+                </div>
+            @endif
+        </div>
     </div>
+</div>
 @endsection

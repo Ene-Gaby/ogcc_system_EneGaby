@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\AcquisitionProcess;
 
 use App\Models\Rubro;
 use Illuminate\Http\Request;
@@ -26,8 +27,8 @@ class RubroController extends Controller
      */
     public function create()
     {
-        $this->authorize('create', Rubro::class);
-        return view('rubros.create');
+    $acquisitionProcesses = AcquisitionProcess::all();
+    return view('rubros.create', compact('acquisitionProcesses'));
     }
 
     /**
@@ -38,20 +39,22 @@ class RubroController extends Controller
      */
     public function store(Request $request)
     {
-    $this->authorize('create', Rubro::class);
-
     $validatedData = $request->validate([
         'description' => 'required|string|max:255',
         'presentation' => 'required|string|max:255',
         'unit_price' => 'required|numeric|min:0',
         'iva_exempt' => 'required|boolean',
-        'onapre_code' => 'required|string|digits:10|unique:rubros,onapre_code', // RN-01
-        'onu_code' => 'required|string|digits:8|unique:rubros,onu_code', // RN-02
+        'onapre_code' => 'required|string|digits:10|unique:rubros,onapre_code',
+        'onu_code' => 'required|string|digits:8|unique:rubros,onu_code',
+        'acquisition_process_id' => 'nullable|exists:acquisition_processes,id',
     ]);
 
-    $rubro = Rubro::create($validatedData);
-
-    return redirect()->route('rubros.index')->with('success', 'Rubro creado exitosamente.');
+    try {
+        $rubro = Rubro::create($validatedData);
+        return redirect()->route('rubros.index')->with('success', 'Rubro creado exitosamente.');
+    } catch (\Exception $e) {
+        return back()->withErrors(['error' => $e->getMessage()]);
+    }
     }
 
     /**
@@ -86,22 +89,37 @@ class RubroController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Rubro $rubro)
-    {
+{
+    // 1. Autorización
     $this->authorize('update', $rubro);
 
+    // 2. Validación explícita y segura
     $validatedData = $request->validate([
         'description' => 'required|string|max:255',
         'presentation' => 'required|string|max:255',
         'unit_price' => 'required|numeric|min:0',
         'iva_exempt' => 'required|boolean',
-        'onapre_code' => 'required|string|digits:10|unique:rubros,onapre_code,' . $rubro->id, // RN-01
-        'onu_code' => 'required|string|digits:8|unique:rubros,onu_code,' . $rubro->id, // RN-02
+        'onapre_code' => [
+            'required',
+            'string',
+            'digits:10',
+            Rule::unique('rubros', 'onapre_code')->ignore($rubro->id),
+        ],
+        'onu_code' => [
+            'required',
+            'string',
+            'digits:8',
+            Rule::unique('rubros', 'onu_code')->ignore($rubro->id),
+        ],
     ]);
 
+    // 3. Actualizar el rubro
     $rubro->update($validatedData);
 
-    return redirect()->route('rubros.index')->with('success', 'Rubro actualizado exitosamente.');
-    }
+    // 4. Redirigir con éxito
+    return redirect()->route('rubros.index')
+        ->with('success', 'Rubro actualizado exitosamente.');
+}
 
     /**
      * Remove the specified resource from storage.

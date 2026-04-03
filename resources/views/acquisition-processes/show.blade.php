@@ -57,11 +57,11 @@
                             </tr>
                             <tr>
                                 <th>Creado:</th>
-                                <td>{{ $acquisitionProcess->created_at->format('d/m/Y H:i') }}</td>
+                                <td>{{ $acquisitionProcess->start_date ? $acquisitionProcess->start_date->format('d/m/Y') : 'No definida' }}</td>
                             </tr>
                             <tr>
                                 <th>Actualizado:</th>
-                                <td>{{ $acquisitionProcess->updated_at->format('d/m/Y H:i') }}</td>
+                                <td>{{ $acquisitionProcess->end_date ? $acquisitionProcess->end_date->format('d/m/Y') : 'No definida' }}</td>
                             </tr>
                         </table>
                     </div>
@@ -71,7 +71,7 @@
                 
                 <h5 class="mt-4">
                     <i class="fas fa-money-bill-wave me-2"></i>Rubros Asociados
-                    <span class="badge bg-info">{{ $acquisitionProcess->rubros->count() }}</span>
+                    <span class="badge badge-info">{{ $acquisitionProcess->rubros()->count() }}</span>
                 </h5>
                 
                 @if($acquisitionProcess->rubros->count() > 0)

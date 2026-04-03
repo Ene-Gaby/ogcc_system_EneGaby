@@ -20,7 +20,7 @@ class Dependency extends Model
     // Relación: Una Dependencia pertenece a un Usuario (el administrador)
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasOne(User::class, 'dependency_id'); // Un usuario es responsable
     }
 
     // Relación: Una Dependencia tiene muchas Solicitudes (Request)

@@ -32,6 +32,7 @@
                     <th>Exento IVA</th>
                     <th>Código ONAPRE</th>
                     <th>Código ONU</th>
+                    <th>Proceso Asociado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -48,6 +49,7 @@
                         </td>
                         <td><code>{{ $rubro->onapre_code }}</code></td>
                         <td><code>{{ $rubro->onu_code }}</code></td>
+                        <td>{{ $rubro->acquisitionProcess ? $rubro->acquisitionProcess->name : 'No asignado' }}</td>
                         <td>
                             <!-- Botón Ver -->
                             <a href="{{ route('rubros.show', $rubro->id) }}" class="btn btn-info btn-sm">

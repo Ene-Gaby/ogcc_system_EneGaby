@@ -34,6 +34,16 @@
                 <label for="onu_code" class="form-label">Código ONU (8 dígitos)</label>
                 <input type="text" name="onu_code" id="onu_code" class="form-control" required pattern="\d{8}" maxlength="8">
             </div>
+            <div class="form-group">
+                <label for="acquisition_process_id">Proceso de Contratación (Opcional)</label>
+                <select name="acquisition_process_id" id="acquisition_process_id" class="form-control">
+                    <option value="">-- Sin proceso --</option>
+                    @foreach($acquisitionProcesses as $proc)
+                        <option value="{{ $proc->id }}">{{ $proc->name }}</option>
+                    @endforeach
+                </select>
+                <small class="form-text text-muted">Si no selecciona un proceso, el rubro quedará sin asociar.</small>
+            </div>
             <button type="submit" class="btn btn-primary">Guardar</button>
             <a href="{{ route('rubros.index') }}" class="btn btn-secondary">Cancelar</a>
         </form>

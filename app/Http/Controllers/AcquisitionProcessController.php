@@ -62,10 +62,8 @@ class AcquisitionProcessController extends Controller
      */
     public function show(AcquisitionProcess $acquisitionProcess)
     {
-        $this->authorize('view', $acquisitionProcess);
-        // Cargar relaciones si es necesario
-        $acquisitionProcess->load('rubros');
-        return view('acquisition-processes.show', compact('acquisitionProcess'));
+    $this->authorize('view', $acquisitionProcess);
+    return view('acquisition-processes.show', compact('acquisitionProcess')); // ← Variable en minúsculas
     }
 
     /**
@@ -132,5 +130,31 @@ class AcquisitionProcessController extends Controller
 
         // Retornamos el archivo para que el navegador lo descargue
         return $pdf->download('presupuesto_consolidado_' . $process->id . '.pdf');
+    }
+
+    public function generateParticipantesReport(AcquisitionProcess $process)
+    {
+    $this->authorize('view', $process);
+
+    $participantes = $process->requests()
+        ->where('participates', true)
+        ->with('dependency')
+        ->get();
+
+    $pdf = Pdf::loadView('pdf.report_participantes', compact('process', 'participantes'));
+    return $pdf->download("listado_participantes_{$process->id}.pdf");
+    }
+
+    public function generateNoParticipantesReport(AcquisitionProcess $process)
+    {
+    $this->authorize('view', $process);
+
+    $noParticipantes = $process->requests()
+        ->where('participates', false)
+        ->with('dependency')
+        ->get();
+
+    $pdf = Pdf::loadView('pdf.report_no_participantes', compact('process', 'noParticipantes'));
+    return $pdf->download("listado_no_participantes_{$process->id}.pdf");
     }
 }

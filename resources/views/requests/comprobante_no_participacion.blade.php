@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Comprobante de Participación</title>
+    <title>Comprobante de No Participación</title>
     <style>
         body {
             font-family: 'DejaVu Sans', sans-serif;
@@ -20,6 +20,11 @@
             font-size: 24px;
             color: #2c3e50;
         }
+        .header h2 {
+            margin: 5px 0;
+            font-size: 18px;
+            color: #dc3545;
+        }
         .logo {
             font-size: 14px;
             margin-top: 10px;
@@ -29,13 +34,13 @@
             margin: 30px 0;
         }
         .certificate {
-            border: 2px solid #4CAF50;
+            border: 2px solid #dc3545;
             padding: 20px;
             margin: 20px 0;
             text-align: center;
         }
         .certificate h2 {
-            color: #4CAF50;
+            color: #dc3545;
             margin: 0 0 10px 0;
         }
         .details {
@@ -48,6 +53,12 @@
         }
         .details td {
             padding: 8px;
+        }
+        .official-letter {
+            margin: 20px 0;
+            padding: 15px;
+            background: #e9ecef;
+            border-left: 4px solid #dc3545;
         }
         .signature {
             margin-top: 50px;
@@ -83,39 +94,41 @@
     @endif
     
     <div class="header">
-        <h1>Comprobante de Participación</h1>
+        <h1>Comprobante de No Participación</h1>
+        <h2>Declaración Formal de No Participación</h2>
         <div class="logo">Sistema OGCC - Universidad de Los Andes</div>
     </div>
     
     <div class="content">
         <div class="certificate">
-            <h2>CERTIFICADO DE PARTICIPACIÓN</h2>
+            <h2>CERTIFICADO DE NO PARTICIPACIÓN</h2>
             <p>Se hace constar que la dependencia <strong>{{ $request->dependency->name ?? 'N/A' }}</strong></p>
-            <p>ha registrado formalmente su participación en el proceso de compra:</p>
+            <p>ha registrado formalmente su <strong style="color: #dc3545;">NO PARTICIPACIÓN</strong> en el proceso de compra:</p>
             <h3>{{ $request->acquisitionProcess->name }}</h3>
             <p><strong>Año Fiscal:</strong> {{ $request->acquisitionProcess->fiscal_year }}</p>
             <p><strong>Fecha de Registro:</strong> {{ $today ?? now()->format('d/m/Y') }}</p>
         </div>
         
+        @if($request->official_letter_number)
+        <div class="official-letter">
+            <p><strong>Número de Oficio:</strong> {{ $request->official_letter_number }}</p>
+            <p>La presente no participación queda formalmente registrada mediante el oficio N° {{ $request->official_letter_number }}.</p>
+        </div>
+        @endif
+        
         <div class="details">
-            <h4>Información de la Solicitud</h4>
+            <h4>Información de la Declaración</h4>
             <table>
                 <tr>
-                    <td width="40%"><strong>N° de Solicitud:</strong></td>
+                    <td width="40%"><strong>N° de Registro:</strong></td>
                     <td>{{ str_pad($request->id, 8, '0', STR_PAD_LEFT) }}</td>
                     <td width="30%"><strong>Monto Total:</strong></td>
-                    <td><strong>{{ number_format($request->total_amount, 2, ',', '.') }} Bs.</strong></td>
+                    <td><strong>0,00 Bs.</strong></td>
                 </tr>
                 <tr>
                     <td><strong>Estado:</strong></td>
                     <td colspan="3">
-                        @if($request->status == 'submitted')
-                            <span style="color: green;">✓ Confirmado y Enviado</span>
-                        @elseif($request->status == 'draft')
-                            <span style="color: orange;">● En Edición</span>
-                        @elseif($request->status == 'not_participating')
-                            <span style="color: #6c757d;">✗ No Participa</span>
-                        @endif
+                        <span style="color: #dc3545;">✗ No Participa</span>
                     </td>
                 </tr>
             </table>
@@ -123,7 +136,8 @@
         
         <div class="signature">
             <p>_________________________________</p>
-            <p>Firma y Sello de la Dependencia</p>
+            <p>Firma y Sello del Representante de la Dependencia</p>
+            <p>{{ $request->dependency->name ?? 'Dependencia' }}</p>
             <p style="margin-top: 20px;">_________________________________</p>
             <p>Autorización del Sistema OGCC</p>
         </div>
